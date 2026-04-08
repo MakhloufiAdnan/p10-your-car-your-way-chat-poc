@@ -27,3 +27,12 @@ logging:
   level:
     org.springframework.security: INFO
     org.hibernate.SQL: INFO
+
+app:
+  demo-users:
+    client:
+      username: ${DEMO_CLIENT_USERNAME:client1}
+      password: ${DEMO_CLIENT_PASSWORD:}
+    agent:
+      username: ${DEMO_AGENT_USERNAME:agent1}
+      password: ${DEMO_AGENT_PASSWORD:Agent123#}
