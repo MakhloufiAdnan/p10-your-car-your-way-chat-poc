@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { LoginRequest } from '../../features/auth/login/login-request';
 import { LoginResponse } from '../../features/auth/login/login-response';
+import { environment } from '../../../environments/environment';
 
 const AUTH_STORAGE_KEY = 'chatpoc_current_user';
 
@@ -13,8 +14,8 @@ const AUTH_STORAGE_KEY = 'chatpoc_current_user';
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
-  private readonly apiUrl = 'http://localhost:8080/api';
-
+  private readonly apiUrl = environment.apiUrl;
+  
   login(payload: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, payload).pipe(
       tap((user) => {
