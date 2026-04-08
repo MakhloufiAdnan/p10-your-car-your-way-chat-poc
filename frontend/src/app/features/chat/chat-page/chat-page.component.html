@@ -1,0 +1,13 @@
+<section class="chat-page">
+  <h1>Tchat</h1>
+
+  @if (currentUser) {
+    <p class="user-info">
+      Connecté en tant que <strong>{{ currentUser.username }}</strong> ({{ currentUser.role }})
+    </p>
+  }
+
+  <button type="button" (click)="logout()">Se déconnecter</button>
+
+  <p>Zone de tchat à venir.</p>
+</section>

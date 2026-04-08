@@ -2,8 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
-import { LoginRequest } from '../../features/auth/models/login-request';
-import { LoginResponse } from '../../features/auth/models/login-response';
+import { LoginRequest } from '../../features/auth/login/login-request';
+import { LoginResponse } from '../../features/auth/login/login-response';
 
 const AUTH_STORAGE_KEY = 'chatpoc_current_user';
 
@@ -13,7 +13,6 @@ const AUTH_STORAGE_KEY = 'chatpoc_current_user';
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
-
   private readonly apiUrl = 'http://localhost:8080/api';
 
   login(payload: LoginRequest): Observable<LoginResponse> {
@@ -26,7 +25,7 @@ export class AuthService {
 
   getCurrentUser(): LoginResponse | null {
     const raw = sessionStorage.getItem(AUTH_STORAGE_KEY);
-    return raw ? JSON.parse(raw) as LoginResponse : null;
+    return raw ? (JSON.parse(raw) as LoginResponse) : null;
   }
 
   isAuthenticated(): boolean {
