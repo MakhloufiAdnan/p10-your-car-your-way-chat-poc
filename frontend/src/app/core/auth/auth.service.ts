@@ -9,18 +9,18 @@ import { environment } from '../../../environments/environment';
 const AUTH_STORAGE_KEY = 'chatpoc_current_user';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly apiUrl = environment.apiUrl;
-  
+
   login(payload: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, payload).pipe(
       tap((user) => {
         sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
-      })
+      }),
     );
   }
 
@@ -35,6 +35,6 @@ export class AuthService {
 
   logout(): void {
     sessionStorage.removeItem(AUTH_STORAGE_KEY);
-    this.router.navigate(['/login']);
+    void this.router.navigate(['/login']);
   }
 }
