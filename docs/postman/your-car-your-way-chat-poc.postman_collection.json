@@ -29,6 +29,10 @@
     {
       "key": "invalidPassword",
       "value": "wrongpassword"
+    },
+    {
+      "key": "conversationId",
+      "value": ""
     }
   ],
   "item": [
@@ -151,7 +155,7 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/conversations?username={{clientUsername}}"
+              "raw": "{{baseUrl}}/api/conversations"
             }
           },
           "event": [
@@ -161,7 +165,11 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
-                  "pm.test('Réponse JSON tableau', function () { const body = pm.response.json(); pm.expect(Array.isArray(body)).to.eql(true); });"
+                  "pm.test('Réponse JSON tableau', function () { const body = pm.response.json(); pm.expect(Array.isArray(body)).to.eql(true); });",
+                  "const body = pm.response.json();",
+                  "if (Array.isArray(body) && body.length > 0 && body[0].conversationId) {",
+                  "  pm.environment.set('conversationId', body[0].conversationId);",
+                  "}"
                 ]
               }
             }
@@ -172,7 +180,7 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/conversations?username={{agentUsername}}"
+              "raw": "{{baseUrl}}/api/conversations"
             }
           },
           "event": [
@@ -181,7 +189,39 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });"
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Réponse JSON tableau', function () { const body = pm.response.json(); pm.expect(Array.isArray(body)).to.eql(true); });",
+                  "const body = pm.response.json();",
+                  "if (Array.isArray(body) && body.length > 0 && body[0].conversationId) {",
+                  "  pm.environment.set('conversationId', body[0].conversationId);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "item": [
+        {
+          "name": "Lister les messages d'une conversation",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/conversations/{{conversationId}}/messages"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('conversationId est défini', function () { pm.expect(pm.environment.get('conversationId')).to.not.be.empty; });",
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Réponse JSON tableau', function () { const body = pm.response.json(); pm.expect(Array.isArray(body)).to.eql(true); });"
                 ]
               }
             }
