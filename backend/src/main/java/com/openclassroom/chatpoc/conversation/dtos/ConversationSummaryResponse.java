@@ -1,4 +1,4 @@
-package com.openclassroom.chatpoc.conversation;
+package com.openclassroom.chatpoc.conversation.dtos;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +9,7 @@ import java.util.UUID;
 @Getter
 @Builder
 public class ConversationSummaryResponse {
+
     private UUID conversationId;
     private String title;
     private LocalDateTime createdAt;

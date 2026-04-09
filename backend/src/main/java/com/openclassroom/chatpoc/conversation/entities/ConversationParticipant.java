@@ -1,6 +1,6 @@
-package com.openclassroom.chatpoc.conversation;
+package com.openclassroom.chatpoc.conversation.entities;
 
-import com.openclassroom.chatpoc.user.User;
+import com.openclassroom.chatpoc.user.entities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "conversation_participants")

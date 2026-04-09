@@ -1,5 +1,7 @@
-package com.openclassroom.chatpoc.conversation;
+package com.openclassroom.chatpoc.conversation.controllers;
 
+import com.openclassroom.chatpoc.conversation.dtos.ConversationSummaryResponse;
+import com.openclassroom.chatpoc.conversation.services.ConversationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;

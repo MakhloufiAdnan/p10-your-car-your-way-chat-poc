@@ -1,7 +1,9 @@
-package com.openclassroom.chatpoc.auth;
+package com.openclassroom.chatpoc.auth.services;
 
-import com.openclassroom.chatpoc.user.User;
-import com.openclassroom.chatpoc.user.UserRepository;
+import com.openclassroom.chatpoc.auth.dtos.LoginRequest;
+import com.openclassroom.chatpoc.auth.dtos.LoginResponse;
+import com.openclassroom.chatpoc.user.entities.User;
+import com.openclassroom.chatpoc.user.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

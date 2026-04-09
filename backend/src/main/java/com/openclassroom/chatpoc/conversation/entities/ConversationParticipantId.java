@@ -1,4 +1,4 @@
-package com.openclassroom.chatpoc.conversation;
+package com.openclassroom.chatpoc.conversation.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

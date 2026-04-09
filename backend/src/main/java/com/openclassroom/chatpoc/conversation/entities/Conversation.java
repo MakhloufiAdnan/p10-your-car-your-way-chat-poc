@@ -1,4 +1,4 @@
-package com.openclassroom.chatpoc.conversation;
+package com.openclassroom.chatpoc.conversation.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

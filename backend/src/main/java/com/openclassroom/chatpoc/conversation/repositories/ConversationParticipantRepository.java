@@ -1,5 +1,7 @@
-package com.openclassroom.chatpoc.conversation;
+package com.openclassroom.chatpoc.conversation.repositories;
 
+import com.openclassroom.chatpoc.conversation.entities.ConversationParticipant;
+import com.openclassroom.chatpoc.conversation.entities.ConversationParticipantId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
