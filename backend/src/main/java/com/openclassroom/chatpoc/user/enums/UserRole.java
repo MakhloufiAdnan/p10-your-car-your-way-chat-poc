@@ -1,4 +1,4 @@
-package com.openclassroom.chatpoc.user;
+package com.openclassroom.chatpoc.user.dtos;
 
 public enum UserRole {
     CLIENT,

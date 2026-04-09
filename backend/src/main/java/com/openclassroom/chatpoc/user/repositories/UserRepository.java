@@ -1,5 +1,6 @@
-package com.openclassroom.chatpoc.user;
+package com.openclassroom.chatpoc.user.repositories;
 
+import com.openclassroom.chatpoc.user.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

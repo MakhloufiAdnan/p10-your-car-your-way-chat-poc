@@ -1,6 +1,6 @@
-package com.openclassroom.chatpoc.auth;
+package com.openclassroom.chatpoc.auth.dtos;
 
-import com.openclassroom.chatpoc.user.UserRole;
+import com.openclassroom.chatpoc.user.dtos.UserRole;
 import lombok.Builder;
 import lombok.Getter;
 

@@ -1,4 +1,4 @@
-package com.openclassroom.chatpoc.auth;
+package com.openclassroom.chatpoc.auth.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
