@@ -1,7 +1,77 @@
 .chat-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.page-header h1 {
+  margin: 0 0 0.5rem;
 }
 
 .user-info {
-  margin-bottom: 1rem;
+  margin: 0;
+  color: #54606f;
+}
+
+.logout-button {
+  padding: 0.75rem 1rem;
+  border: 1px solid #d7dce3;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.chat-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  gap: 1rem;
+  min-height: 480px;
+}
+
+.sidebar,
+.conversation-panel {
+  padding: 1rem;
+  border: 1px solid #d7dce3;
+  border-radius: 1rem;
+  background: #f8fafc;
+}
+
+.conversation-panel h2 {
+  margin-top: 0;
+}
+
+.conversation-meta,
+.placeholder-text,
+.info-state,
+.empty-panel p,
+.error-state p {
+  margin: 0;
+  color: #54606f;
+}
+
+.error-state {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.error-state button {
+  width: fit-content;
+}
+
+@media (max-width: 900px) {
+  .chat-layout {
+    grid-template-columns: 1fr;
+  }
 }

@@ -1,13 +1,53 @@
 <section class="chat-page">
-  <h1>Tchat</h1>
+  <header class="page-header">
+    <div>
+      <h1>Tchat</h1>
 
-  @if (currentUser) {
-    <p class="user-info">
-      Connecté en tant que <strong>{{ currentUser.username }}</strong> ({{ currentUser.role }})
-    </p>
-  }
+      @if (currentUser) {
+        <p class="user-info">
+          Connecté en tant que <strong>{{ currentUser.username }}</strong> ({{ currentUser.role }})
+        </p>
+      }
+    </div>
 
-  <button type="button" (click)="logout()">Se déconnecter</button>
+    <button type="button" class="logout-button" (click)="logout()">Se déconnecter</button>
+  </header>
 
-  <p>Zone de tchat à venir.</p>
+  <div class="chat-layout">
+    <aside class="sidebar">
+      @if (isLoadingConversations()) {
+        <p class="info-state">Chargement des conversations...</p>
+      } @else if (loadError()) {
+        <div class="error-state">
+          <p>{{ loadError() }}</p>
+          <button type="button" (click)="retryLoad()">Réessayer</button>
+        </div>
+      } @else {
+        <app-conversations-list
+          [conversations]="conversations()"
+          [selectedConversationId]="selectedConversation()?.conversationId ?? null"
+          (conversationSelected)="selectConversation($event)"
+        />
+      }
+    </aside>
+
+    <section class="conversation-panel" aria-label="Conversation sélectionnée">
+      @if (selectedConversation(); as conversation) {
+        <h2>{{ conversation.title }}</h2>
+
+        <p class="conversation-meta">
+          Identifiant : <strong>{{ conversation.conversationId }}</strong>
+        </p>
+
+        <p class="placeholder-text">
+          Historique des messages à implémenter.
+        </p>
+      } @else {
+        <div class="empty-panel">
+          <h2>Aucune conversation sélectionnée</h2>
+          <p>Sélectionne une conversation pour préparer l’affichage des messages.</p>
+        </div>
+      }
+    </section>
+  </div>
 </section>

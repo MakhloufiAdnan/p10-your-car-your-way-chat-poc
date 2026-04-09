@@ -1,0 +1,21 @@
+<section class="conversations-list" aria-label="Liste des conversations">
+  <h2>Conversations</h2>
+
+  <div class="list">
+    @for (conversation of conversations(); track conversation.conversationId) {
+      <button
+        type="button"
+        class="conversation-item"
+        [class.selected]="isSelected(conversation.conversationId)"
+        (click)="selectConversation(conversation)"
+      >
+        <span class="conversation-title">{{ conversation.title }}</span>
+        <span class="conversation-date">
+          Créée le {{ conversation.createdAt | date: 'dd/MM/yyyy à HH:mm' }}
+        </span>
+      </button>
+    } @empty {
+      <p class="empty-state">Aucune conversation disponible.</p>
+    }
+  </div>
+</section>
