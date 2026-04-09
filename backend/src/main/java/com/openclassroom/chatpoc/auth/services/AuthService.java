@@ -2,34 +2,48 @@ package com.openclassroom.chatpoc.auth.services;
 
 import com.openclassroom.chatpoc.auth.dtos.LoginRequest;
 import com.openclassroom.chatpoc.auth.dtos.LoginResponse;
-import com.openclassroom.chatpoc.user.entities.User;
-import com.openclassroom.chatpoc.user.repositories.UserRepository;
+import com.openclassroom.chatpoc.auth.security.AuthenticatedUser;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
-    public LoginResponse login(LoginRequest request) {
-        User user = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new ResponseStatusException(UNAUTHORIZED, "Identifiants invalides."));
+    public LoginResponse login(LoginRequest request, HttpServletRequest httpRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                UsernamePasswordAuthenticationToken.unauthenticated(
+                        request.getUsername(),
+                        request.getPassword()
+                )
+        );
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-            throw new ResponseStatusException(UNAUTHORIZED, "Identifiants invalides.");
-        }
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(authentication);
+        SecurityContextHolder.setContext(context);
+
+        HttpSession session = httpRequest.getSession(true);
+        session.setAttribute(
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                context
+        );
+
+        AuthenticatedUser currentUser = (AuthenticatedUser) authentication.getPrincipal();
 
         return LoginResponse.builder()
-                .userId(user.getId())
-                .username(user.getUsername())
-                .role(user.getRole())
+                .userId(currentUser.userId())
+                .username(currentUser.getUsername())
+                .role(currentUser.role())
                 .message("Authentification réussie.")
                 .build();
     }
