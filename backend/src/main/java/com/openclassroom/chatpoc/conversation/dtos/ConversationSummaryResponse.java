@@ -12,5 +12,7 @@ public class ConversationSummaryResponse {
 
     private UUID conversationId;
     private String title;
+    private String category;
+    private String categoryLabel;
     private LocalDateTime createdAt;
 }

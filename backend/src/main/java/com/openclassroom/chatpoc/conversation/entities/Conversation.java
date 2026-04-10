@@ -1,7 +1,10 @@
 package com.openclassroom.chatpoc.conversation.entities;
 
+import com.openclassroom.chatpoc.conversation.enums.ConversationCategory;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -26,6 +29,10 @@ public class Conversation {
     @Id
     @Column(nullable = false, updatable = false)
     private UUID id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
+    private ConversationCategory category;
 
     @Column(length = 255)
     private String title;
