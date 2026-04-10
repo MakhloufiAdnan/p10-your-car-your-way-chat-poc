@@ -1,9 +1,10 @@
 import { Component, DestroyRef, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { finalize } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../../core/auth/auth.service';
 import { ChatService } from '../data-access/chat.service';
+import { ChatRealtimeService } from '../data-access/chat-realtime.service';
 import { ConversationSummary } from '../data-access/conversation-summary';
 import { ChatMessage } from '../data-access/chat-message';
 import { ConversationsListComponent } from '../ui/conversations-list/conversations-list.component';
@@ -25,7 +26,10 @@ import { MessageComposerComponent } from '../ui/message-composer/message-compose
 export class ChatPageComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly chatService = inject(ChatService);
+  private readonly chatRealtimeService = inject(ChatRealtimeService);
   private readonly destroyRef = inject(DestroyRef);
+
+  private realtimeSubscription: Subscription | null = null;
 
   @ViewChild(MessageComposerComponent)
   private readonly messageComposer?: MessageComposerComponent;
@@ -44,6 +48,7 @@ export class ChatPageComponent implements OnInit {
   protected readonly sendMessageError = signal('');
 
   ngOnInit(): void {
+    this.chatRealtimeService.connect();
     this.loadConversations();
   }
 
@@ -57,6 +62,7 @@ export class ChatPageComponent implements OnInit {
     this.selectedConversation.set(conversation);
     this.sendMessageError.set('');
     this.loadMessages(conversation.conversationId);
+    this.subscribeToConversation(conversation.conversationId);
   }
 
   protected retryLoadConversations(): void {
@@ -92,7 +98,7 @@ export class ChatPageComponent implements OnInit {
       )
       .subscribe({
         next: (createdMessage) => {
-          this.messages.update((messages) => [...messages, createdMessage]);
+          this.appendMessageIfMissing(createdMessage);
           this.messageComposer?.reset();
         },
         error: () => {
@@ -102,6 +108,8 @@ export class ChatPageComponent implements OnInit {
   }
 
   protected logout(): void {
+    this.realtimeSubscription?.unsubscribe();
+    this.chatRealtimeService.disconnect();
     this.authService.logout();
   }
 
@@ -132,6 +140,7 @@ export class ChatPageComponent implements OnInit {
 
           if (nextSelectedConversation) {
             this.loadMessages(nextSelectedConversation.conversationId);
+            this.subscribeToConversation(nextSelectedConversation.conversationId);
             return;
           }
 
@@ -170,5 +179,35 @@ export class ChatPageComponent implements OnInit {
           this.messagesLoadError.set('Impossible de charger les messages.');
         },
       });
+  }
+
+  private subscribeToConversation(conversationId: string): void {
+    this.realtimeSubscription?.unsubscribe();
+
+    this.realtimeSubscription = this.chatRealtimeService
+      .watchConversation(conversationId)
+      .subscribe((message) => {
+        const selectedConversationId = this.selectedConversation()?.conversationId;
+
+        if (message.conversationId !== selectedConversationId) {
+          return;
+        }
+
+        this.appendMessageIfMissing(message);
+      });
+  }
+
+  private appendMessageIfMissing(message: ChatMessage): void {
+    this.messages.update((currentMessages) => {
+      const alreadyExists = currentMessages.some(
+        (currentMessage) => currentMessage.messageId === message.messageId,
+      );
+
+      if (alreadyExists) {
+        return currentMessages;
+      }
+
+      return [...currentMessages, message];
+    });
   }
 }
