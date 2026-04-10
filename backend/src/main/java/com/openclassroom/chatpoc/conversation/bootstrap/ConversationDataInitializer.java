@@ -8,18 +8,26 @@ import com.openclassroom.chatpoc.user.entities.User;
 import com.openclassroom.chatpoc.user.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
+@Order(2)
 @RequiredArgsConstructor
 public class ConversationDataInitializer implements CommandLineRunner {
 
-    private final UserRepository userRepository;
     private final ConversationRepository conversationRepository;
     private final ConversationParticipantRepository conversationParticipantRepository;
+    private final UserRepository userRepository;
 
     @Override
     public void run(String... args) {
+        if (conversationRepository.count() > 0) {
+            return;
+        }
+
         User client = userRepository.findByUsername("client1").orElse(null);
         User agent = userRepository.findByUsername("agent1").orElse(null);
 
@@ -27,17 +35,32 @@ public class ConversationDataInitializer implements CommandLineRunner {
             return;
         }
 
-        if (conversationRepository.count() > 0) {
-            return;
-        }
+        Conversation firstConversation = conversationRepository.save(
+                Conversation.builder()
+                        .id(UUID.randomUUID())
+                        .title("Conversation de démonstration")
+                        .build()
+        );
 
-        Conversation conversation = Conversation.builder()
-                .title("Conversation de démonstration")
-                .build();
+        Conversation secondConversation = conversationRepository.save(
+                Conversation.builder()
+                        .id(UUID.randomUUID())
+                        .title("Suivi de réservation")
+                        .build()
+        );
 
-        conversationRepository.save(conversation);
+        saveParticipant(firstConversation, client);
+        saveParticipant(firstConversation, agent);
 
-        conversationParticipantRepository.save(new ConversationParticipant(conversation, client, null));
-        conversationParticipantRepository.save(new ConversationParticipant(conversation, agent, null));
+        saveParticipant(secondConversation, client);
+        saveParticipant(secondConversation, agent);
+    }
+
+    private void saveParticipant(Conversation conversation, User user) {
+        ConversationParticipant participant = new ConversationParticipant();
+        participant.setConversation(conversation);
+        participant.setUser(user);
+
+        conversationParticipantRepository.save(participant);
     }
 }
