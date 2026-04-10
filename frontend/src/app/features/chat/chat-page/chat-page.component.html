@@ -51,6 +51,13 @@
           </div>
         } @else if (currentUser) {
           <app-messages-list [messages]="messages()" [currentUsername]="currentUser.username" />
+
+          <app-message-composer
+            [disabled]="!selectedConversation()"
+            [isSubmitting]="isSendingMessage()"
+            [errorMessage]="sendMessageError()"
+            (messageSubmitted)="submitMessage($event)"
+          />
         }
       } @else {
         <div class="empty-panel">
