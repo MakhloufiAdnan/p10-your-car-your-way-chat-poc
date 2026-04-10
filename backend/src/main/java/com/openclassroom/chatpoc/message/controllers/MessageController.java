@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -29,9 +30,14 @@ public class MessageController {
             @PathVariable UUID conversationId,
             @AuthenticationPrincipal AuthenticatedUser currentUser
     ) {
+        AuthenticatedUser authenticatedUser = Objects.requireNonNull(
+                currentUser,
+                "Utilisateur authentifié requis."
+        );
+
         return messageService.getConversationMessages(
                 conversationId,
-                currentUser.getUsername()
+                authenticatedUser.getUsername()
         );
     }
 
@@ -42,9 +48,14 @@ public class MessageController {
             @Valid @RequestBody SendMessageRequest request,
             @AuthenticationPrincipal AuthenticatedUser currentUser
     ) {
+        AuthenticatedUser authenticatedUser = Objects.requireNonNull(
+                currentUser,
+                "Utilisateur authentifié requis."
+        );
+
         return messageService.sendMessage(
                 conversationId,
-                currentUser.getUsername(),
+                authenticatedUser.getUsername(),
                 request
         );
     }

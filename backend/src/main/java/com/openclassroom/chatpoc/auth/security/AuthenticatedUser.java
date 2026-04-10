@@ -1,6 +1,6 @@
 package com.openclassroom.chatpoc.auth.security;
 
-import com.openclassroom.chatpoc.user.dtos.UserRole;
+import com.openclassroom.chatpoc.user.enums.UserRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

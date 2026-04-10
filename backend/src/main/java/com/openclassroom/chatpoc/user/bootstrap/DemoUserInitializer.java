@@ -1,7 +1,7 @@
 package com.openclassroom.chatpoc.user.bootstrap;
 
-import com.openclassroom.chatpoc.user.dtos.UserRole;
 import com.openclassroom.chatpoc.user.entities.User;
+import com.openclassroom.chatpoc.user.enums.UserRole;
 import com.openclassroom.chatpoc.user.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

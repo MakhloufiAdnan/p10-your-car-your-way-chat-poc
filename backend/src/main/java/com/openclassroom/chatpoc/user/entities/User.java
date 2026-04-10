@@ -1,6 +1,6 @@
 package com.openclassroom.chatpoc.user.entities;
 
-import com.openclassroom.chatpoc.user.dtos.UserRole;
+import com.openclassroom.chatpoc.user.enums.UserRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
