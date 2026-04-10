@@ -30,4 +30,11 @@ public interface ConversationParticipantRepository extends JpaRepository<Convers
           and cp.user.username = :username
     """)
     boolean existsByConversationIdAndUsername(UUID conversationId, String username);
+
+    @Query("""
+        select cp.user.username
+        from ConversationParticipant cp
+        where cp.conversation.id = :conversationId
+    """)
+    List<String> findParticipantUsernamesByConversationId(UUID conversationId);
 }

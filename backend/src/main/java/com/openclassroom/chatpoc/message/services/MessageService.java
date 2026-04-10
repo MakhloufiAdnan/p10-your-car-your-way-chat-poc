@@ -6,6 +6,7 @@ import com.openclassroom.chatpoc.conversation.repositories.ConversationRepositor
 import com.openclassroom.chatpoc.message.dtos.MessageResponse;
 import com.openclassroom.chatpoc.message.dtos.SendMessageRequest;
 import com.openclassroom.chatpoc.message.entities.Message;
+import com.openclassroom.chatpoc.message.realtime.ChatRealtimePublisher;
 import com.openclassroom.chatpoc.message.repositories.MessageRepository;
 import com.openclassroom.chatpoc.user.entities.User;
 import com.openclassroom.chatpoc.user.repositories.UserRepository;
@@ -28,6 +29,7 @@ public class MessageService {
     private final ConversationParticipantRepository conversationParticipantRepository;
     private final ConversationRepository conversationRepository;
     private final UserRepository userRepository;
+    private final ChatRealtimePublisher chatRealtimePublisher;
 
     public List<MessageResponse> getConversationMessages(UUID conversationId, String username) {
         ensureUserHasAccessToConversation(conversationId, username);
@@ -61,8 +63,11 @@ public class MessageService {
                 .build();
 
         Message savedMessage = messageRepository.save(message);
+        MessageResponse response = toResponse(savedMessage);
 
-        return toResponse(savedMessage);
+        chatRealtimePublisher.publishMessageCreated(response);
+
+        return response;
     }
 
     private void ensureUserHasAccessToConversation(UUID conversationId, String username) {
