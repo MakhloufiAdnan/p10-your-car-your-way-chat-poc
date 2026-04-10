@@ -11,6 +11,14 @@ import { ConversationsListComponent } from '../ui/conversations-list/conversatio
 import { MessagesListComponent } from '../ui/messages-list/messages-list.component';
 import { MessageComposerComponent } from '../ui/message-composer/message-composer.component';
 
+/**
+* Orchestre la page principale du chat :
+* - chargement des conversations,
+* - chargement de l'historique,
+* - abonnement temps réel,
+* - envoi de message,
+* - gestion des états de chargement et d'erreur.
+*/
 @Component({
   selector: 'app-chat-page',
   standalone: true,
@@ -47,11 +55,20 @@ export class ChatPageComponent implements OnInit {
   protected readonly messagesLoadError = signal('');
   protected readonly sendMessageError = signal('');
 
+  /**
+  * Ouvre la connexion temps réel dès l'entrée sur la page,
+  * puis charge les conversations accessibles à l'utilisateur connecté.
+  */
   ngOnInit(): void {
     this.chatRealtimeService.connect();
     this.loadConversations();
   }
 
+  /**
+  * Change la conversation affichée et resynchronise à la fois :
+  * - l'historique REST,
+  * - l'abonnement WebSocket temps réel.
+  */
   protected selectConversation(conversation: ConversationSummary): void {
     const currentSelectedId = this.selectedConversation()?.conversationId;
 
@@ -79,6 +96,12 @@ export class ChatPageComponent implements OnInit {
     this.loadMessages(conversationId);
   }
 
+  /**
+  * Envoie un message via l'API REST.
+  *
+  * Le message est ensuite reçu en temps réel via WebSocket par les participants.
+  * Un garde-fou anti-doublon évite d'afficher deux fois le même message.
+  */
   protected submitMessage(content: string): void {
     const conversation = this.selectedConversation();
 
@@ -181,6 +204,12 @@ export class ChatPageComponent implements OnInit {
       });
   }
 
+  /**
+  * Souscrit aux messages temps réel de la conversation actuellement sélectionnée.
+  *
+  * Le filtrage par `selectedConversationId` protège l'UI contre l'affichage
+  * de messages arrivant alors que l'utilisateur a déjà changé de conversation.
+  */
   private subscribeToConversation(conversationId: string): void {
     this.realtimeSubscription?.unsubscribe();
 
@@ -197,6 +226,13 @@ export class ChatPageComponent implements OnInit {
       });
   }
 
+  /**
+  * Ajoute un message seulement s'il n'est pas déjà présent dans la liste.
+  *
+  * Cette protection évite les doublons possibles entre :
+  * - la réponse HTTP après envoi,
+  * - le push WebSocket reçu presque au même moment.
+  */
   private appendMessageIfMissing(message: ChatMessage): void {
     this.messages.update((currentMessages) => {
       const alreadyExists = currentMessages.some(

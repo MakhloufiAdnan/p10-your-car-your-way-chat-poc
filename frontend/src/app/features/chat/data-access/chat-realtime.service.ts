@@ -4,6 +4,12 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { ChatMessage } from './chat-message';
 
+/**
+* Gère la connexion STOMP/WebSocket du module de chat.
+*
+* Une seule connexion est maintenue côté frontend, puis l'abonnement est
+* déplacé dynamiquement vers la conversation actuellement affichée.
+*/
 @Injectable({
   providedIn: 'root',
 })
@@ -12,6 +18,12 @@ export class ChatRealtimeService {
   private activeConversationSubscription: StompSubscription | null = null;
   private isConnected = false;
 
+  /**
+  * Initialise le client STOMP une seule fois.
+  *
+  * La reconnexion automatique est activée pour rendre l'appli
+  * plus robuste en cas de coupure réseau ou de redémarrage du backend.
+  */
   connect(): void {
     if (this.client?.active || this.isConnected) {
       return;
@@ -44,6 +56,12 @@ export class ChatRealtimeService {
     this.client.activate();
   }
 
+  /**
+  * Change la conversation active observée en temps réel.
+  *
+  * Le service réutilise la même connexion WebSocket et remplace simplement
+  * l'abonnement STOMP vers la file utilisateur correspondant à la conversation.
+  */
   watchConversation(conversationId: string): Observable<ChatMessage> {
     return new Observable<ChatMessage>((subscriber) => {
       let retryHandle: ReturnType<typeof setTimeout> | null = null;

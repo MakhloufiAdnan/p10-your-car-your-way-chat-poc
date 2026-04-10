@@ -17,12 +17,29 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/**
+ * Configuration de sécurité de la PoC.
+ *
+ * La démonstration repose sur une authentification par session HTTP côté Spring Security.
+ * Le frontend Angular envoie donc les cookies de session sur les appels API via `withCredentials`.
+ *
+ * Note PoC :
+ * - CSRF est désactivé pour simplifier les échanges navigateur pendant la démonstration.
+ * - formLogin et httpBasic sont désactivés car l'authentification passe par un endpoint REST dédié.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    /**
+    * Définit les règles d'accès de l'application.
+    *
+    * Les endpoints de conversation et de messages sont protégés.
+    * Le login reste public pour permettre l'ouverture de session.
+    */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain
+    (HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
@@ -52,6 +69,12 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
+    /**
+    * Autorise le frontend local à appeler l'API avec les cookies de session.
+    *
+    * Le paramètre `allowCredentials(true)` est indispensable ici, car le backend
+    * utilise une session serveur et non un jetonstocké côté client.
+    */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

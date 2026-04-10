@@ -12,6 +12,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+/**
+* Prépare des conversations de démonstration pour visualiser rapidement le chat.
+*
+* L'objectif est de rendre la PoC immédiatement exploitable après le démarrage,
+* sans manipulation manuelle préalable en base de données.
+*/
 @Component
 @RequiredArgsConstructor
 @Order(2)
@@ -21,6 +27,10 @@ public class ConversationDataInitializer implements CommandLineRunner {
     private final ConversationRepository conversationRepository;
     private final ConversationParticipantRepository conversationParticipantRepository;
 
+    /**
+    * Ne sème les conversations que si aucune conversation n'existe encore,
+    * afin d'éviter les doublons à chaque redémarrage.
+    */
     @Override
     public void run(String... args) {
         if (conversationRepository.count() > 0) {
@@ -40,6 +50,12 @@ public class ConversationDataInitializer implements CommandLineRunner {
         seedConversationsForPair(client2, agent2);
     }
 
+    /**
+    * Génère plusieurs catégories de conversation pour un couple client/agent.
+    *
+    * Cela permet de démontrer que le tchat s'intègre à plusieurs contextes métier :
+    * réservation, paiement, modification, annulation et support général.
+    */
     private void seedConversationsForPair(User client, User agent) {
         createConversationWithParticipants(ConversationCategory.BOOKING, client, agent);
         createConversationWithParticipants(ConversationCategory.PAYMENT, client, agent);

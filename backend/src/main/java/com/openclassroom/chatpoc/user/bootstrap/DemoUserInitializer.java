@@ -10,6 +10,12 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+/**
+* Initialise des comptes de démonstration au démarrage de la PoC.
+*
+* Ces utilisateurs servent uniquement à tester rapidement les parcours
+* de login et le chat temps réel entre client et agent.
+*/
 @Component
 @RequiredArgsConstructor
 @Order(1)
@@ -42,6 +48,10 @@ public class DemoUserInitializer implements CommandLineRunner {
     @Value("${app.demo-users.agent2.password:Agent234#}")
     private String demoAgent2Password;
 
+    /**
+    * Crée les utilisateurs de démonstration uniquement s'ils n'existent pas déjà,
+    * afin de garder le démarrage idempotent.
+    */
     @Override
     public void run(String... args) {
         createUserIfNotExists(demoClientUsername, demoClientPassword, UserRole.CLIENT);
@@ -50,6 +60,12 @@ public class DemoUserInitializer implements CommandLineRunner {
         createUserIfNotExists(demoAgent2Username, demoAgent2Password, UserRole.AGENT);
     }
 
+    /**
+    * Crée un utilisateur de démo avec mot de passe hashé.
+    *
+    * Le hashage est réalisé ici exactement comme pour un utilisateur réel,
+    * afin de conserver un comportement de sécurité cohérent.
+    */
     private void createUserIfNotExists(String username, String rawPassword, UserRole role) {
         if (userRepository.existsByUsername(username)) {
             return;
