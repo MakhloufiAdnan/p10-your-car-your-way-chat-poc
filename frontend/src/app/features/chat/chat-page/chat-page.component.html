@@ -35,6 +35,7 @@
       @if (selectedConversation(); as conversation) {
         <header class="conversation-header">
           <div>
+            <span class="conversation-badge">{{ conversation.categoryLabel }}</span>
             <h2>{{ conversation.title }}</h2>
             <p class="conversation-meta">
               Identifiant : <strong>{{ conversation.conversationId }}</strong>

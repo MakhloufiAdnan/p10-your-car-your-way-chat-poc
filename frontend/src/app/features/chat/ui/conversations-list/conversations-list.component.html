@@ -9,6 +9,7 @@
         [class.selected]="isSelected(conversation.conversationId)"
         (click)="selectConversation(conversation)"
       >
+        <span class="conversation-category">{{ conversation.categoryLabel }}</span>
         <span class="conversation-title">{{ conversation.title }}</span>
         <span class="conversation-date">
           Créée le {{ conversation.createdAt | date: 'dd/MM/yyyy à HH:mm' }}
