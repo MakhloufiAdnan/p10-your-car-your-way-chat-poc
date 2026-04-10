@@ -2,6 +2,7 @@ services:
   db:
     image: postgres:16
     container_name: chatpoc-db
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -10,6 +11,43 @@ services:
       - "${POSTGRES_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: chatpoc-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SERVER_PORT: 8080
+      APP_DEMO_USERS_CLIENT_USERNAME: ${DEMO_CLIENT_USERNAME}
+      APP_DEMO_USERS_CLIENT_PASSWORD: ${DEMO_CLIENT_PASSWORD}
+      APP_DEMO_USERS_AGENT_USERNAME: ${DEMO_AGENT_USERNAME}
+      APP_DEMO_USERS_AGENT_PASSWORD: ${DEMO_AGENT_PASSWORD}
+    ports:
+      - "${BACKEND_PORT}:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: chatpoc-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${FRONTEND_PORT}:80"
 
 volumes:
   postgres_data:
