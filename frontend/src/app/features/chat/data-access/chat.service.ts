@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { ConversationSummary } from './conversation-summary';
+import { ChatMessage } from './chat-message';
 
 @Injectable({
   providedIn: 'root',
@@ -13,5 +14,9 @@ export class ChatService {
 
   getConversations(): Observable<ConversationSummary[]> {
     return this.http.get<ConversationSummary[]>(`${this.apiUrl}/conversations`);
+  }
+
+  getMessages(conversationId: string): Observable<ChatMessage[]> {
+    return this.http.get<ChatMessage[]>(`${this.apiUrl}/conversations/${conversationId}/messages`);
   }
 }

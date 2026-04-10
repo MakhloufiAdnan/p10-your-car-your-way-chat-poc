@@ -1,0 +1,54 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.messages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.message-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #d7dce3;
+  border-radius: 0.9rem;
+  background: #ffffff;
+}
+
+.message-card.own-message {
+  border-color: #bfd0ff;
+  background: #f5f8ff;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.sender {
+  font-weight: 600;
+}
+
+.sent-at {
+  color: #54606f;
+  font-size: 0.85rem;
+}
+
+.content {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+
+.empty-state {
+  margin: 0;
+  color: #54606f;
+}

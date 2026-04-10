@@ -17,10 +17,10 @@
     <aside class="sidebar">
       @if (isLoadingConversations()) {
         <p class="info-state">Chargement des conversations...</p>
-      } @else if (loadError()) {
+      } @else if (conversationsLoadError()) {
         <div class="error-state">
-          <p>{{ loadError() }}</p>
-          <button type="button" (click)="retryLoad()">Réessayer</button>
+          <p>{{ conversationsLoadError() }}</p>
+          <button type="button" (click)="retryLoadConversations()">Réessayer</button>
         </div>
       } @else {
         <app-conversations-list
@@ -33,19 +33,29 @@
 
     <section class="conversation-panel" aria-label="Conversation sélectionnée">
       @if (selectedConversation(); as conversation) {
-        <h2>{{ conversation.title }}</h2>
+        <header class="conversation-header">
+          <div>
+            <h2>{{ conversation.title }}</h2>
+            <p class="conversation-meta">
+              Identifiant : <strong>{{ conversation.conversationId }}</strong>
+            </p>
+          </div>
+        </header>
 
-        <p class="conversation-meta">
-          Identifiant : <strong>{{ conversation.conversationId }}</strong>
-        </p>
-
-        <p class="placeholder-text">
-          Historique des messages à implémenter.
-        </p>
+        @if (isLoadingMessages()) {
+          <p class="info-state">Chargement des messages...</p>
+        } @else if (messagesLoadError()) {
+          <div class="error-state">
+            <p>{{ messagesLoadError() }}</p>
+            <button type="button" (click)="retryLoadMessages()">Réessayer</button>
+          </div>
+        } @else if (currentUser) {
+          <app-messages-list [messages]="messages()" [currentUsername]="currentUser.username" />
+        }
       } @else {
         <div class="empty-panel">
           <h2>Aucune conversation sélectionnée</h2>
-          <p>Sélectionne une conversation pour préparer l’affichage des messages.</p>
+          <p>Sélectionne une conversation pour afficher son historique.</p>
         </div>
       }
     </section>
