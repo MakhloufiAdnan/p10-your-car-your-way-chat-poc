@@ -1,59 +1,85 @@
-# App
+# Frontend — Angular (PoC chat)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.0.
+Partie interface du projet full stack.  
+Pour le contexte global, les prérequis et l’ordre de démarrage, lire d’abord le `README.md` à la racine du dépôt.
 
-## Development server
+## À quoi sert cette partie ?
 
-To start a local development server, run:
+Le frontend permet :
 
-```bash
-ng serve
-```
+- la connexion avec des comptes de démonstration ;
+- l’affichage des conversations ;
+- la consultation de l’historique des messages ;
+- l’envoi d’un message ;
+- la réception des nouveaux messages en temps réel.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Environnement local
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Depuis le dossier `frontend/` :
 
 ```bash
-ng generate --help
+npm install
 ```
 
-## Building
-
-To build the project run:
+Lancer le serveur de développement :
 
 ```bash
-ng build
+npm run start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+L’application est servie sur :
 
-## Running unit tests
+```txt
+http://localhost:4200
+```
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+Le backend Spring Boot doit être lancé en parallèle si l’application utilise l’API ou le WebSocket.
+
+## Technologies
+
+- Angular
+- TypeScript
+- RxJS
+- STOMP JS
+- Standalone components
+
+## Dépendances du frontend
+
+Le frontend dépend du backend pour :
+
+- l’API REST : `http://localhost:8080/api`
+- le WebSocket : `ws://localhost:8080/ws-chat`
+
+## Commandes utiles
+
+### Démarrage du serveur de développement
 
 ```bash
-ng test
+npm run start
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### Build de production
 
 ```bash
-ng e2e
+npm run build
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### Tests
 
-## Additional Resources
+```bash
+npm test
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Structure utile
+
+```txt
+frontend/
+├── src/
+│   ├── app/
+│   │   ├── core/        # auth, interceptor HTTP, services transverses
+│   │   └── features/    # auth et chat
+│   └── environments/    # configuration frontend
+├── angular.json
+├── package.json
+└── README.md
+```
