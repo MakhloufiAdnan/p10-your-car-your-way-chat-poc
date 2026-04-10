@@ -2,6 +2,7 @@ package com.openclassroom.chatpoc.conversation.bootstrap;
 
 import com.openclassroom.chatpoc.conversation.entities.Conversation;
 import com.openclassroom.chatpoc.conversation.entities.ConversationParticipant;
+import com.openclassroom.chatpoc.conversation.enums.ConversationCategory;
 import com.openclassroom.chatpoc.conversation.repositories.ConversationParticipantRepository;
 import com.openclassroom.chatpoc.conversation.repositories.ConversationRepository;
 import com.openclassroom.chatpoc.user.entities.User;
@@ -11,16 +12,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
-@Order(2)
 @RequiredArgsConstructor
+@Order(2)
 public class ConversationDataInitializer implements CommandLineRunner {
 
+    private final UserRepository userRepository;
     private final ConversationRepository conversationRepository;
     private final ConversationParticipantRepository conversationParticipantRepository;
-    private final UserRepository userRepository;
 
     @Override
     public void run(String... args) {
@@ -28,32 +27,41 @@ public class ConversationDataInitializer implements CommandLineRunner {
             return;
         }
 
-        User client = userRepository.findByUsername("client1").orElse(null);
-        User agent = userRepository.findByUsername("agent1").orElse(null);
+        User client1 = userRepository.findByUsername("client1").orElse(null);
+        User agent1 = userRepository.findByUsername("agent1").orElse(null);
+        User client2 = userRepository.findByUsername("client2").orElse(null);
+        User agent2 = userRepository.findByUsername("agent2").orElse(null);
 
-        if (client == null || agent == null) {
+        if (client1 == null || agent1 == null || client2 == null || agent2 == null) {
             return;
         }
 
-        Conversation firstConversation = conversationRepository.save(
-                Conversation.builder()
-                        .id(UUID.randomUUID())
-                        .title("Conversation de démonstration")
-                        .build()
-        );
+        seedConversationsForPair(client1, agent1);
+        seedConversationsForPair(client2, agent2);
+    }
 
-        Conversation secondConversation = conversationRepository.save(
-                Conversation.builder()
-                        .id(UUID.randomUUID())
-                        .title("Suivi de réservation")
-                        .build()
-        );
+    private void seedConversationsForPair(User client, User agent) {
+        createConversationWithParticipants(ConversationCategory.BOOKING, client, agent);
+        createConversationWithParticipants(ConversationCategory.PAYMENT, client, agent);
+        createConversationWithParticipants(ConversationCategory.MODIFICATION, client, agent);
+        createConversationWithParticipants(ConversationCategory.CANCELLATION, client, agent);
+        createConversationWithParticipants(ConversationCategory.GENERAL_SUPPORT, client, agent);
+    }
 
-        saveParticipant(firstConversation, client);
-        saveParticipant(firstConversation, agent);
+    private void createConversationWithParticipants(
+            ConversationCategory category,
+            User client,
+            User agent
+    ) {
+        Conversation conversation = Conversation.builder()
+                .category(category)
+                .title(category.getLabel())
+                .build();
 
-        saveParticipant(secondConversation, client);
-        saveParticipant(secondConversation, agent);
+        conversationRepository.save(conversation);
+
+        saveParticipant(conversation, client);
+        saveParticipant(conversation, agent);
     }
 
     private void saveParticipant(Conversation conversation, User user) {

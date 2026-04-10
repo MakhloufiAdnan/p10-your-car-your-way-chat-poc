@@ -16,10 +16,11 @@ public class ConversationService {
     public List<ConversationSummaryResponse> getConversationsForUser(String username) {
         return conversationParticipantRepository.findAllByUsernameWithConversation(username)
                 .stream()
-                // Retourne une vue simple pour la liste des conversations.
                 .map(cp -> ConversationSummaryResponse.builder()
                         .conversationId(cp.getConversation().getId())
                         .title(cp.getConversation().getTitle())
+                        .category(cp.getConversation().getCategory().name())
+                        .categoryLabel(cp.getConversation().getCategory().getLabel())
                         .createdAt(cp.getConversation().getCreatedAt())
                         .build())
                 .toList();
