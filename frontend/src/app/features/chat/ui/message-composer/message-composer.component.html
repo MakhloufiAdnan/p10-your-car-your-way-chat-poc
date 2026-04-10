@@ -1,0 +1,35 @@
+<section class="message-composer" aria-label="Envoyer un message">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <label class="field-label" for="message-content">Votre message</label>
+
+    <textarea
+      id="message-content"
+      formControlName="content"
+      rows="4"
+      placeholder="Écrivez votre message..."
+      [disabled]="disabled() || isSubmitting()"
+    ></textarea>
+
+    @if (form.controls.content.touched && form.controls.content.hasError('required')) {
+      <p class="field-error">Le message est obligatoire.</p>
+    }
+
+    @if (form.controls.content.touched && form.controls.content.hasError('maxlength')) {
+      <p class="field-error">Le message ne doit pas dépasser 2000 caractères.</p>
+    }
+
+    @if (errorMessage()) {
+      <p class="submit-error">{{ errorMessage() }}</p>
+    }
+
+    <div class="actions">
+      <button type="submit" [disabled]="disabled() || isSubmitting()">
+        @if (isSubmitting()) {
+          Envoi en cours...
+        } @else {
+          Envoyer
+        }
+      </button>
+    </div>
+  </form>
+</section>
