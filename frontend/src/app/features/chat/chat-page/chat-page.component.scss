@@ -36,7 +36,7 @@
   display: grid;
   grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
   gap: 1rem;
-  min-height: 480px;
+  min-height: 560px;
 }
 
 .sidebar,
@@ -47,12 +47,17 @@
   background: #f8fafc;
 }
 
-.conversation-panel h2 {
-  margin-top: 0;
+.conversation-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.conversation-header h2 {
+  margin: 0 0 0.5rem;
 }
 
 .conversation-meta,
-.placeholder-text,
 .info-state,
 .empty-panel p,
 .error-state p {

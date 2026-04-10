@@ -1,0 +1,21 @@
+<section class="messages-list" aria-label="Historique des messages">
+  @for (message of messages(); track message.messageId) {
+    <article
+      class="message-card"
+      [class.own-message]="message.senderUsername === currentUsername()"
+    >
+      <header class="message-header">
+        <span class="sender">{{ message.senderUsername }}</span>
+        <time class="sent-at">
+          {{ message.sentAt | date: 'dd/MM/yyyy à HH:mm' }}
+        </time>
+      </header>
+
+      <p class="content">
+        {{ message.content }}
+      </p>
+    </article>
+  } @empty {
+    <p class="empty-state">Aucun message dans cette conversation.</p>
+  }
+</section>
