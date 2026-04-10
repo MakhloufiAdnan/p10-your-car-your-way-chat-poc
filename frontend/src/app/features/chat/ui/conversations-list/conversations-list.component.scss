@@ -49,6 +49,16 @@
   box-shadow: 0 0 0 3px rgb(49 94 251 / 12%);
 }
 
+.conversation-category {
+  display: inline-flex;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #3652c7;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
 .conversation-title {
   font-weight: 600;
 }
